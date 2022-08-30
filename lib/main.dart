@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:task_one/ListItem.dart';
 import 'package:task_one/ListItemData.dart';
@@ -26,7 +28,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Details'),
     );
   }
 }
@@ -50,25 +52,55 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  List<bool> isToggleButtonSelected = [true, false];
+  var tabs = [
+    Expanded(
+        child: Column(
+      children: [
+         Expanded(
+           child: Container(
+                color: Colors.white,
+            child: Column(
+              children: [
+                Text('Description'),
+                Text('هلا وغلا'),
+              ],
+            ),
+        ),
+         ),
+        Spacer(),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: MaterialButton(child: const Text('End Ad'), onPressed: () {}),
+        )
+      ],
+    )),
+    Expanded(
+        child: Column(
+      children: [
+        Expanded(
+            child: Column(
+          children: [],
+        )),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: MaterialButton(child: Text('s'), onPressed: () {}),
+        )
+      ],
+    )),
+  ];
+  var titleStyle = TextStyle(
+      fontWeight: FontWeight.bold, fontSize: 22, color: Color(0xFF505050));
+  var bodyStyle = TextStyle(
+      fontWeight: FontWeight.normal, fontSize: 15, color: Color(0xFF838383));
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
+  var smallTextStyle = TextStyle(
+      fontWeight: FontWeight.normal, fontSize: 12, color: Color(0xFF838383));
 
   @override
   Widget build(BuildContext context) {
-    final dataList = List.filled(
-        5,
-        ListItemData("assets/images/imageone.png", "nagde", "Negotiable",
-            "نجدى", DateTime.now(), "Mecca", 3, false, true));
+    var selectedTab = tabs[isToggleButtonSelected.indexOf(true)];
+
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -76,25 +108,127 @@ class _MyHomePageState extends State<MyHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: ListView.separated(
-        itemCount: dataList.length,
-        itemBuilder: (context, i) {
-          return ListItem(itemData: dataList.elementAt(i));
-        },
-        separatorBuilder: (BuildContext context, int index) =>
-            const Divider(thickness: 8, color: Colors.grey),
-      ),
-
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
+        appBar: AppBar(
+          // Here we take the value from the MyHomePage object that was created by
+          // the App.build method, and use it to set our appbar title.
+          title: Text(widget.title),
+          actions: [
+            IconButton(onPressed: () {}, icon: const Icon(Icons.delete)),
+            IconButton(onPressed: () {}, icon: const Icon(Icons.share)),
+          ],
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+            bottomRight: Radius.circular(20),
+            bottomLeft: Radius.circular(20),
+          )),
+          leading: IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.arrow_back_ios_new_rounded)),
+          backgroundColor: Color(0x525A5D),
+        ),
+        body: Container(
+          color: const Color(0xFFE3E7EC),
+          child: Column(
+            children: [
+              Expanded(
+                  flex: 1,
+                  child: Image.asset(
+                    'assets/images/camel.jpg',
+                    fit: BoxFit.cover,
+                  )),
+              Expanded(
+                  flex: 2,
+                  child: Column(
+                    children: [
+                      Container(
+                        color: Colors.white,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 8.0, horizontal: 15),
+                              child: Text('Negotiable', style: titleStyle),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children:  [
+                                Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 8, horizontal: 15),
+                                  child: Text(
+                                      'نجدى',
+                                    style: bodyStyle,
+                                  ),
+                                ),
+                                Text(
+                                    '2',
+                                  style: bodyStyle,
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      left: 8.0, right: 15, top: 8, bottom: 8),
+                                  child: Icon(Icons.remove_red_eye,
+                                  color: Color(0xFF6F7478),),
+                                )
+                              ],
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 8.0, horizontal: 15),
+                              child: Text(
+                                  '20110143',
+                                style: smallTextStyle,
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 8.0, horizontal: 15),
+                              child: Text(
+                                  'Your phone number will be shown ',
+                                style: smallTextStyle,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                          child: ToggleButtons(
+                            constraints: BoxConstraints.expand(
+                              height: 40,
+                              width: (MediaQuery.of(context).size.width / 2) - (8),
+                            ),
+                            renderBorder: false,
+                            children: [
+                              Text('info'),
+                              Text('comments'),
+                            ],
+                            onPressed: (int index) {
+                              setState(() {
+                                print(index);
+                                if (index == 0) {
+                                  isToggleButtonSelected[0] = true;
+                                  isToggleButtonSelected[1] = false;
+                                } else {
+                                  print(index);
+                                  isToggleButtonSelected[0] = false;
+                                  isToggleButtonSelected[1] = true;
+                                }
+                                print(isToggleButtonSelected);
+                              });
+                            },
+                            isSelected: isToggleButtonSelected,
+                          ),
+                        ),
+                      ),
+                      selectedTab
+                    ],
+                  ))
+            ],
+          ),
+        ) // This trailing comma makes auto-formatting nicer for build methods.
+        );
   }
 }

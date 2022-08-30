@@ -76,11 +76,17 @@ class ListItem extends StatelessWidget {
                                   Container(
                                     width: 10,
                                   ),
-                                  Icon(
-                                      (itemData.isLiked)
-                                          ? Icons.heart_broken
-                                          : Icons.heart_broken_outlined,
-                                      color: Colors.grey[800])
+                                  InkWell(
+                                    child: Icon(
+                                        (itemData.isLiked)
+                                            ? Icons.heart_broken
+                                            : Icons.heart_broken_outlined,
+                                        color: Colors.grey[800],
+                                    ),
+                                    onTap: (){
+
+                                  }
+                                  )
                                 ],
                               )
                             ],
