@@ -2,7 +2,7 @@ import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:task_one/ListItem.dart';
-import 'package:task_one/ListItemData.dart';
+import 'package:task_one/CommentData.dart';
 
 void main() {
   runApp(const MyApp());
@@ -53,42 +53,11 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   List<bool> isToggleButtonSelected = [true, false];
-  var tabs = [
-    Expanded(
-        child: Column(
-      children: [
-         Expanded(
-           child: Container(
-                color: Colors.white,
-            child: Column(
-              children: [
-                Text('Description'),
-                Text('هلا وغلا'),
-              ],
-            ),
-        ),
-         ),
-        Spacer(),
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: MaterialButton(child: const Text('End Ad'), onPressed: () {}),
-        )
-      ],
-    )),
-    Expanded(
-        child: Column(
-      children: [
-        Expanded(
-            child: Column(
-          children: [],
-        )),
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: MaterialButton(child: Text('s'), onPressed: () {}),
-        )
-      ],
-    )),
-  ];
+
+  var dataList = List.filled(
+      5,
+      CommentData("assets/images/imageone.png",'عبدالله',true, 3, " first comments"));
+
   var titleStyle = TextStyle(
       fontWeight: FontWeight.bold, fontSize: 22, color: Color(0xFF505050));
   var bodyStyle = TextStyle(
@@ -99,6 +68,114 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+
+    var tabs = [
+      Expanded(
+          child: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Container(
+                color: Colors.white,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 8.0, horizontal: 15),
+                            child: Row(
+                              children: [
+                                Text('Discription', style: titleStyle),
+                              ],
+                            ),
+                          ),
+                          Align(
+                              alignment: Alignment.centerRight,
+                              child: Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Text('هلا وغلا'),
+                              )),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Row(
+              children: [
+                Expanded(
+                  child: InkWell(
+                    child: Container(
+                      height: 50,
+                      color: Colors.orangeAccent,
+                      child: Align(
+                        child: Text(
+                          'End Ad',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 17,
+                            ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          )
+        ],
+      )),
+      Expanded(
+          child: Column(
+        children: [
+          Expanded(
+            child: ListView.separated(
+              itemCount: dataList.length,
+              itemBuilder: (context, i) {
+                return CommentItemView(commentData: dataList.elementAt(i));
+              },
+              separatorBuilder: (BuildContext context, int index) =>
+                  const Divider(),
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              height: 60,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextField(
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(60),
+                                borderSide:
+                                    BorderSide(style: BorderStyle.none)),
+                            hintText: 'Add comment'),
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.send_outlined),
+                    onPressed: () {},
+                  )
+                ],
+              ),
+            ),
+          )
+        ],
+      )),
+    ];
+
     var selectedTab = tabs[isToggleButtonSelected.indexOf(true)];
 
     // This method is rerun every time setState is called, for instance as done
@@ -152,24 +229,26 @@ class _MyHomePageState extends State<MyHomePage> {
                             ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.end,
-                              children:  [
+                              children: [
                                 Padding(
                                   padding: EdgeInsets.symmetric(
                                       vertical: 8, horizontal: 15),
                                   child: Text(
-                                      'نجدى',
+                                    'نجدى',
                                     style: bodyStyle,
                                   ),
                                 ),
                                 Text(
-                                    '2',
+                                  '2',
                                   style: bodyStyle,
                                 ),
                                 Padding(
                                   padding: EdgeInsets.only(
                                       left: 8.0, right: 15, top: 8, bottom: 8),
-                                  child: Icon(Icons.remove_red_eye,
-                                  color: Color(0xFF6F7478),),
+                                  child: Icon(
+                                    Icons.remove_red_eye,
+                                    color: Color(0xFF6F7478),
+                                  ),
                                 )
                               ],
                             ),
@@ -177,7 +256,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               padding: const EdgeInsets.symmetric(
                                   vertical: 8.0, horizontal: 15),
                               child: Text(
-                                  '20110143',
+                                '20110143',
                                 style: smallTextStyle,
                               ),
                             ),
@@ -185,7 +264,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               padding: const EdgeInsets.symmetric(
                                   vertical: 8.0, horizontal: 15),
                               child: Text(
-                                  'Your phone number will be shown ',
+                                'Your phone number will be shown ',
                                 style: smallTextStyle,
                               ),
                             ),
@@ -198,7 +277,8 @@ class _MyHomePageState extends State<MyHomePage> {
                           child: ToggleButtons(
                             constraints: BoxConstraints.expand(
                               height: 40,
-                              width: (MediaQuery.of(context).size.width / 2) - (8),
+                              width:
+                                  (MediaQuery.of(context).size.width / 2) - (8),
                             ),
                             renderBorder: false,
                             children: [
@@ -230,5 +310,6 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ) // This trailing comma makes auto-formatting nicer for build methods.
         );
+
   }
 }
