@@ -1,7 +1,11 @@
 import 'dart:ffi';
 import 'dart:ui';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:task_one/models/City.dart';
+import 'package:task_one/Constants.dart';
+import 'package:task_one/network/CitiesService.dart';
 
 void main() {
   runApp(const MyApp());
@@ -33,7 +37,10 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
+
   const MyHomePage({Key? key, required this.title}) : super(key: key);
+
+
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -51,6 +58,23 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  List<City> citiesList = [];
+  var isCitySelected = [];
+
+  @override
+  void initState() {
+    super.initState();
+    CitiesService().getCities().then((value) => {
+      citiesList = value,
+      isCitySelected = List.generate(citiesList.length, (index) => true)});
+
+    setState((){
+      citiesList;
+      isCitySelected;
+    });
+  }
+
+
   var titleStyle = const TextStyle(
       fontWeight: FontWeight.bold, fontSize: 22, color: Color(0xFF505050));
   var bodyStyle = const TextStyle(
@@ -62,8 +86,10 @@ class _MyHomePageState extends State<MyHomePage> {
     color: const Color(0xFF838383),
   );
 
+
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
@@ -76,31 +102,100 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
         leading: IconButton(onPressed: () {}, icon: const Icon(Icons.close)),
-        backgroundColor: const Color(0x525A5D),
+        backgroundColor: dark_gray_color,
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text('bullets'),
-                Text('search'),
-                Text('list'),
-                Text('button'),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Container(
-                    color: Colors.amber,
-                    child: Text(
-                      'Next',
+      body: Container(
+        color: light_gray_color,
+        child: Column(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Chip(
+                        deleteIcon: Icon(Icons.check, color: Colors.white),
+                        autofocus: true,
+                        avatar: CircleAvatar(
+                            backgroundColor: Colors.transparent,
+                            child: Icon(Icons.check, color: Colors.white)),
+                        label: Text('images'),
+                        backgroundColor: dark_gray_color,
+                      ),
+                      Chip(
+                        autofocus: true,
+                        avatar: CircleAvatar(
+                            backgroundColor: Colors.transparent,
+                            child: Icon(Icons.check, color: Colors.white)),
+                        label: Text('images'),
+                        backgroundColor: dark_gray_color,
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: CupertinoSearchTextField(),
+                  ),
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.white,
+                      ),
+                      margin: EdgeInsets.all(dim15dp),
+                      padding: EdgeInsets.all(8),
+                      child: ListView.separated(
+                          itemCount: citiesList.length,
+                          separatorBuilder: (BuildContext context, int index) =>
+                              const Divider(),
+                          itemBuilder: (BuildContext context, int index) {
+                            return Padding(
+                              padding: const EdgeInsets.all(0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(citiesList[index].name.toString()),
+                                  Checkbox(
+                                      value: isCitySelected[index],
+                                      onChanged: (bool? isChecked) {
+                                        setState(
+                                          () {
+                                            isCitySelected[index] = isChecked!;
+                                          },
+                                        );
+                                      }),
+                                ],
+                              ),
+                            );
+                          }),
                     ),
                   ),
-                ),
-              ],
+                  InkWell(
+                    child: Container(
+                      color: dark_gray_color,
+                      padding: EdgeInsets.all(dim15dp),
+                      alignment: Alignment.center,
+                      child: Text(
+                        next_btn_title,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                        ),
+                      ),
+                    ),
+                    onTap: () {
+                      setState(
+                        () {}
+                      );
+                    },
+                  )
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
